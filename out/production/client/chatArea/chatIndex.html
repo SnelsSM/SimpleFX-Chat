@@ -1,0 +1,187 @@
+<html>
+    <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=windows-1251">
+    <style>
+         body {
+            background-color:  #e0f2f1;
+            background-image: url(p6.png);
+            padding: 0px;
+            margin: 0px;
+            overflow: hidden;
+            -webkit-user-select: none;
+         }
+         a {
+            text-decoration: none;
+         }
+         .wrapper {
+         }
+         .message_body {
+            margin-top: 5px;
+            width: 300px;
+            border: none;
+            clear: both;
+         }
+         .message_resume {
+            width: 300px;
+            border: none;
+            margin-top: -2px;
+            border-radius: 2px;
+            float: right;
+            clear: both;
+
+         }
+         .login {
+            width: 300px;
+            margin-bottom: 5px;
+            border: none;
+            display: block;
+            color: #004d40;
+            font-weight: bold;
+            -webkit-user-select: text;
+            clear: both;
+         }
+         .message {
+            display: block;
+            width: 240px;
+            border-radius: 2px;
+            padding: 5px;
+            color: #fff;
+            background-color: #009688;
+            -webkit-user-select: text;
+         }
+         .history {
+            display: block;
+            width: 90%;
+            margin: 0 auto;
+            text-align: center;
+            clear: both;
+         }
+         .more {
+            margin: 0 auto;
+            display: block;
+            width: 60px;
+            border-radius: 5px;
+            background-color: #b2dfdb;
+            color: #4db6ac;
+
+         }
+         .more:hover {
+            background-color: #00796b;
+            color: #fff;
+         }
+         #main {
+            height:98%;
+            width: 100%;
+            overflow: hidden;
+            position: absolute;
+            padding-top: 5px;
+            padding-bottom: 0;
+         }
+         #from_me {
+            float: right;
+            margin-right: 10px;
+         }
+         #to_me {
+            float: left;
+            margin-left: 10px;
+         }
+         #from_server {
+            float: left;
+            margin-left: 10px;
+         }
+         #left {
+            text-align: left;
+         }
+         #right {
+            text-align: right;
+         }
+         #message_left {
+            margin-left: 50px;
+            text-align: left;
+         }
+         #message_right {
+            margin-right: 50px;
+            text-align: right;
+         }
+    </style>
+    <link rel='stylesheet' href='perfect-scrollbar.min.css'/>
+
+    <script src='js/jquery-3.1.1.min.js'></script>
+    <script src='js/perfect-scrollbar.min.js'></script>
+        <script src='js/date.format.js'></script>
+</head>
+
+    <body>
+
+        <div class="wrapper" id="main">
+            <div class="history"><a href="javascript://" onclick="MainController.getHistory();">
+                <div class="more">More...</div>
+            </a></div>
+            <script>
+                function upHistory(history) {
+                   jQuery(".history").after(history);
+                }
+            </script>
+
+        <script type="text/javascript">
+
+                var old_login;
+                var old_time;
+                function add(login, message, css_id, date) {
+                if (css_id == 'to_me' || css_id == 'from_server') {
+                    var id = 'left';
+                } else {
+                    var id = 'right';
+                }
+                var time = (new Date(parseInt(date, 10))).format("HH:MM");
+
+                    if (login != old_login) {
+                        var str = '\
+                            <div class="message_body" id="' +css_id+ '">\
+                                <div class="login" id="' +id+ '">\
+                                    ' +login+ ' ' +time+'\
+                                </div>\
+                                <div class="message" id="message_'+id+'">\
+                                    ' +message+ '\
+                                </div>\
+                            </div>\
+                        ';
+                        this.old_login = login;
+                        this.old_time = parseInt(date, 10);
+                    } else {
+                        var str = '\
+                            <div class="message_resume" id="' +css_id+ '">\
+                                <div class="message" id="message_'+id+'">\
+                                    ' +message+ '\
+                                </div>\
+                            </div>\
+                        ';
+                    }
+                    var oi=document.getElementById('main');
+                    oi.innerHTML += str;
+                    var scrolled = document.getElementById('main').scrollTop;
+                    var h = document.getElementById('main').scrollHeight;
+                    var h_user = document.getElementById('main').clientHeight;
+                    if ((h - scrolled) < (h_user + 300)) {
+                        $('#main').scrollTop = h;
+                        Ps.update($('#main'));
+                        }
+
+                }
+        </script>
+
+        </div>
+
+        <script type="text/javascript">
+            var $ = document.querySelector.bind(document);
+            window.onload = function () {
+                Ps.initialize($('#main'), {
+                    useSelectionScroll: true,
+                    suppressScrollX: false
+                });
+            };
+        </script>
+
+    </body>
+</html>
+

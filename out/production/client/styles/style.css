@@ -1,0 +1,18 @@
+.list_view {
+    -fx-border-color:  #00796b;
+    -fx-padding: -1 0 0 0;
+    -fx-background-color:  #00796b;
+    -fx-text-fill: #004d40;
+}
+
+.list_view .list-cell {
+    fx-text-fill: #004d40;
+}
+
+.list_view .list-cell:odd{
+	-fx-background-color: white;
+}
+
+.list_view .list-cell:filled {
+    fx-text-fill: #004d40;
+}

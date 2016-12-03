@@ -1,0 +1,6 @@
+messages\Message.class
+Main.class
+sqltasks\SQLQueries.class
+messages\MessageHistory.class
+messages\Message$MESSAGE_TYPE.class
+sqltasks\SQLBridge.class

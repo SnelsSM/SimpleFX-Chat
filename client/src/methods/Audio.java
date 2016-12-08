@@ -1,14 +1,17 @@
 package methods;
 
 import javax.sound.sampled.*;
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Created by snels on 27.11.2016.
  */
 public class Audio extends Thread {
     private String type;
+    private InputStream inputStream;
 
     public Audio(String type) {
         this.type = type;
@@ -22,7 +25,8 @@ public class Audio extends Thread {
 
         try {
             c = AudioSystem.getClip();
-            ais = AudioSystem.getAudioInputStream(new File(getType(type)));
+            InputStream bufferedIS = new BufferedInputStream(getType(type));
+            ais = AudioSystem.getAudioInputStream(bufferedIS);
             c.open(ais);
             c.loop(0);
         } catch (UnsupportedAudioFileException e) {
@@ -34,8 +38,12 @@ public class Audio extends Thread {
         }
     }
 
-    private String getType(String type) {
-        if (type.equals("sent")) this.type = "client/src/sent.wav";
-        return this.type;
+
+
+    private InputStream getType(String type) {
+        if (type.equals("sent")) {
+            this.inputStream = getClass().getClassLoader().getResourceAsStream("sent.wav");
+        }
+        return this.inputStream;
     }
 }

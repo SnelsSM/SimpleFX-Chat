@@ -7,7 +7,6 @@ import javafx.concurrent.Worker;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Cursor;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
@@ -21,6 +20,7 @@ import netscape.javascript.JSObject;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -33,8 +33,6 @@ public class MainController implements Initializable{
     @FXML private TextField textField;
     @FXML private AnchorPane root;
 
-    private double xOffset;
-    private double yOffset;
     private Stage stage;
     private boolean loaded;
     private MainController mainController;
@@ -44,9 +42,6 @@ public class MainController implements Initializable{
     StringBuilder messageTpl = new StringBuilder();
     StringBuilder messageMinTpl = new StringBuilder();
 
-    public void setMainStage(Stage stage) {
-        this.stage = stage;
-    }
     public void setMainController(MainController mainController) { this.mainController = mainController; }
 
     @Override
@@ -62,21 +57,6 @@ public class MainController implements Initializable{
         listUsers.setItems(connection.getUsersOnline());
         listUsers.setCellFactory(usersListView -> new UserCell());
 
-        root.setOnMousePressed(event -> {
-            xOffset = ((Stage) root.getScene().getWindow()).getX() - event.getScreenX();
-            yOffset = ((Stage) root.getScene().getWindow()).getY() - event.getScreenY();
-            root.setCursor(Cursor.CLOSED_HAND);
-        });
-
-        root.setOnMouseDragged(event -> {
-            ((Stage) root.getScene().getWindow()).setX(event.getScreenX() + xOffset);
-            ((Stage) root.getScene().getWindow()).setY(event.getScreenY() + yOffset);
-
-        });
-
-        root.setOnMouseReleased(event -> {
-            root.setCursor(Cursor.DEFAULT);
-        });
     }
 
 
@@ -156,18 +136,14 @@ public class MainController implements Initializable{
     }
 
     public void setMessageTpl() {
-        try {
-            Scanner sMessage = new Scanner(new File("client/src/resources/Message.tpl"));
-            Scanner sMessageMin = new Scanner(new File("client/src/resources/MessageMin.tpl"));
+
+            Scanner sMessage = new Scanner(getClass().getClassLoader().getResourceAsStream("chatArea/tpls/Message.tpl"));
+            Scanner sMessageMin = new Scanner(getClass().getClassLoader().getResourceAsStream("chatArea/tpls/MessageMin.tpl"));
             while (sMessage.hasNext())
                 messageTpl.append(sMessage.nextLine());
             while (sMessageMin.hasNext())
                 messageMinTpl.append(sMessageMin.nextLine());
-
             sMessage.close();
             sMessageMin.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
     }
 }

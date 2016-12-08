@@ -1,0 +1,1 @@
+java -jar client.jar %username% localhost 1234

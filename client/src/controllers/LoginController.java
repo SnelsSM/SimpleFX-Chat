@@ -8,15 +8,16 @@ import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import javafx.util.Callback;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 /**
@@ -28,43 +29,24 @@ public class LoginController implements Initializable {
     private FXMLLoader fxmlLoader = new FXMLLoader();
     private MainController mainController;
     private Stage loginStage;
-    private Stage mainStage;
     private boolean isConnected;
     private Connection connection;
+    private List<String> parameters;
 
     @FXML private TextField login;
     @FXML private TextField host;
     @FXML private TextField port;
     @FXML private Label errorLabel;
+    @FXML private Button enterButton;
     @FXML private AnchorPane parentLogin;
-    private double xOffset;
-    private double yOffset;
 
     public void setMainStage(Stage loginStage) {
         this.loginStage = loginStage;
     }
 
-
-
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
-        parentLogin.setOnMousePressed(event -> {
-            xOffset = loginStage.getX() - event.getScreenX();
-            yOffset = loginStage.getY() - event.getScreenY();
-            parentLogin.setCursor(Cursor.CLOSED_HAND);
-        });
-
-        parentLogin.setOnMouseDragged(event -> {
-            loginStage.setX(event.getScreenX() + xOffset);
-            loginStage.setY(event.getScreenY() + yOffset);
-
-        });
-
-        parentLogin.setOnMouseReleased(event -> {
-            parentLogin.setCursor(Cursor.DEFAULT);
-        });
+//        System.out.println(parameters.size());
     }
 
     @FXML
@@ -109,19 +91,30 @@ public class LoginController implements Initializable {
                 stage.setScene(scene);
                 stage.setMinHeight(550);
                 stage.setMinWidth(800);
+                stage.setTitle("SimpleFX Chat");
                 //stage.initStyle(StageStyle.UNDECORATED);
                 stage.show();
             }
-    }
-
-    private void setErrorLabel(String error) {
-        errorLabel.setText(error);
     }
 
     @FXML
     private void closeWindow(ActionEvent event) {
         loginStage = (Stage) parentLogin.getScene().getWindow();
         loginStage.close();
+    }
+
+    private void setErrorLabel(String error) {
+        errorLabel.setText(error);
+    }
+
+    public void setParameters(List<String> parameters) {
+        this.parameters = parameters;
+        if (parameters.size() == 3) {
+            login.setText(parameters.get(0));
+            host.setText(parameters.get(1));
+            port.setText(parameters.get(2));
+
+        }
     }
 
 }

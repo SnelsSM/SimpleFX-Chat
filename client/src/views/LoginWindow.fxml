@@ -9,9 +9,9 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane fx:id="parentLogin" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="300.0" style="-fx-background-color: #EAEAeA;" stylesheets="@../styles/material-fx-v0_3.css" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.LoginController">
+<AnchorPane fx:id="parentLogin" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="250.0" style="-fx-background-color: #b2dfdb;" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.LoginController">
    <children>
-      <VBox prefHeight="200.0" prefWidth="100.0" styleClass="card" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+      <VBox prefHeight="200.0" prefWidth="100.0" styleClass="card" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <TextField fx:id="login" promptText="Login" styleClass="tree-table-view">
                <VBox.margin>
@@ -41,10 +41,16 @@
                   <Insets />
                </VBox.margin>
             </Separator>
-            <HBox alignment="BOTTOM_RIGHT" prefHeight="100.0" prefWidth="200.0">
+            <HBox alignment="BOTTOM_RIGHT" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #4db6ac;">
                <children>
-                  <Button fx:id="enterButton" defaultButton="true" mnemonicParsing="false" onAction="#logIn" text="ENTER" />
-                  <Button cancelButton="true" mnemonicParsing="false" onAction="#closeWindow" styleClass="button-flat" text="CANCEL" />
+                  <Button fx:id="enterButton" defaultButton="true" mnemonicParsing="false" onAction="#logIn" text="ENTER">
+                     <HBox.margin>
+                        <Insets bottom="10.0" right="10.0" />
+                     </HBox.margin></Button>
+                  <Button cancelButton="true" mnemonicParsing="false" onAction="#closeWindow" styleClass="button-flat" text="CANCEL">
+                     <HBox.margin>
+                        <Insets bottom="10.0" right="10.0" />
+                     </HBox.margin></Button>
                </children>
             </HBox>
          </children>

@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -20,8 +21,10 @@ public class ClientThread extends Thread {
     private Socket socket;
     private SQLBridge SQLBridge;
     private Users users;
+    private ArrayList user;
     private ObjectOutputStream outputStream;
     private Message message;
+    private Object input;
     private String login;
     private boolean isAdded = false;
     private boolean isExist = false;
@@ -43,55 +46,64 @@ public class ClientThread extends Thread {
             outputStream = new ObjectOutputStream(socket.getOutputStream());;
             id = SQLBridge.getId();
 
+
             while (true) {
+                input = inputStream.readObject();
+                if (input instanceof Integer) {
+                    System.out.println((Integer)input);
+                    outputStream.writeObject(input);
+                } else {
+                    message = (Message) input;
+                    message.setDate();
 
-                message = (Message) inputStream.readObject();
-                message.setDate();
+                    if (!isAdded) {
+                        login = message.getLogin();
+                        for (String newLogin : users.getUsersList()) {
+                            if (newLogin.equals(login)) {
+                                outputStream.writeObject(new Message(login, Message.MESSAGE_TYPE.LOGINERROR));
+                                socket.close();
+                                isExist = true;
+                                return;
+                            }
+                        }
+                        if (!isExist) {
+                            users.addUser(login, outputStream);
+                            isAdded = true;
+                            broadcast(new Message(login, Message.MESSAGE_TYPE.SERVER));
+                        }
 
-                   if (!isAdded) {
-                    login = message.getLogin();
-                    for (String newLogin : users.getUsersList()) {
-                        if (newLogin.equals(login)) {
-                            outputStream.writeObject(new Message(login, Message.MESSAGE_TYPE.LOGINERROR));
-                            socket.close();
-                            isExist = true;
-                            return;
+                        user = SQLBridge.getUser(login, socket);
+
+
+                        for (Object message : SQLBridge.getHistory().getMessages()) {
+                            outputStream.writeObject(message);
                         }
                     }
-                    if (!isExist) {
-                        users.addUser(login, outputStream);
-                        isAdded = true;
-                        broadcast(new Message(login, Message.MESSAGE_TYPE.SERVER));
+
+                    if (message.getMessageType() == Message.MESSAGE_TYPE.HELLO) {
+                        if (!isExist)
+                            System.out.println("Пользователь " + login + " присоединился к чату");
+
+                    } else if (message.getMessageType() == Message.MESSAGE_TYPE.HISTORY) {
+                        if (id != 0) {
+                            History temp = SQLBridge.upHistory(id);
+                            MessageHistory messageHistory = new MessageHistory();
+                            for (Object message : temp.getMessages()) {
+                                messageHistory.addMessage((Message) message);
+                            }
+
+                            outputStream.writeObject(messageHistory);
+                            this.id = temp.getId();
+                            System.out.println(this.id);
+                        }
+                    } else {
+                        SQLBridge.addMessage(message);
+                        System.out.println("[" + login + "]: " + message.getMessage());
                     }
 
-                    for (Object message : SQLBridge.getHistory().getMessages()) {
-                        outputStream.writeObject(message);
-                    }
+
+                    broadcast(message);
                 }
-
-                if (message.getMessageType() == Message.MESSAGE_TYPE.HELLO) {
-                    if (!isExist)
-                        System.out.println("Пользователь " + login + " присоединился к чату");
-
-                } else if (message.getMessageType() == Message.MESSAGE_TYPE.HISTORY) {
-                       if(id != 0) {
-                           History temp = SQLBridge.upHistory(id);
-                           MessageHistory messageHistory = new MessageHistory();
-                           for (Object message : temp.getMessages()) {
-                               messageHistory.addMessage((Message) message);
-                           }
-
-                           outputStream.writeObject(messageHistory);
-                           this.id = temp.getId();
-                           System.out.println(this.id);
-                       }
-                } else {
-                    SQLBridge.addMessage(message);
-                    System.out.println("[" + login + "]: " + message.getMessage());
-                }
-
-
-                broadcast(message);
             }
 
         } catch (IOException e) {

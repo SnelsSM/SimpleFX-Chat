@@ -17,10 +17,7 @@ import messages.MessageHistory;
 import methods.Audio;
 import netscape.javascript.JSObject;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -42,11 +39,16 @@ public class MainController implements Initializable{
     StringBuilder messageTpl = new StringBuilder();
     StringBuilder messageMinTpl = new StringBuilder();
 
-    public void setMainController(MainController mainController) { this.mainController = mainController; }
+    public void setMainController(MainController mainController) {
+        this.mainController = mainController;
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources){
+        newInterface();
+    }
 
+    public void newInterface() {
         setMessageTpl();
         URL url = getClass().getResource("/chatArea/chatIndex.html");
         listMessages.getEngine().load(url.toExternalForm());
@@ -56,7 +58,7 @@ public class MainController implements Initializable{
         //listMessages.setItems(connection.getMessages()); // Заполняем listView
         listUsers.setItems(connection.getUsersOnline());
         listUsers.setCellFactory(usersListView -> new UserCell());
-
+        System.out.println("Эгегей!");
     }
 
 

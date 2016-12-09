@@ -2,6 +2,8 @@ package sqltasks;
 
 import messages.Message;
 
+import java.net.Socket;
+import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -37,6 +39,11 @@ public class SQLBridge {
             history = new History(sqlQueries.getId(), messagesList);
         }
         return history;
+    }
+
+    public ArrayList<Object> getUser(String login, Socket socket) {
+        ArrayList list = sqlQueries.getUser(login, socket);
+        return list;
     }
 
     public History upHistory(int id) {

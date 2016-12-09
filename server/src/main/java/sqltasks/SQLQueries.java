@@ -2,7 +2,9 @@ package sqltasks;
 
 import messages.Message;
 
+import java.net.Socket;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -35,6 +37,9 @@ public class SQLQueries {
             statement = connect.createStatement();
             statement.execute("CREATE TABLE if not exists 'public' " +
                     "('id' INTEGER PRIMARY KEY AUTOINCREMENT, 'date' INT, 'name' text, 'message' text);");
+
+            statement.execute("CREATE TABLE if not exists 'users' " +
+                    "('id' INTEGER PRIMARY KEY AUTOINCREMENT, 'login' text, 'socket' BLOB, 'access' INT DEFAULT '1');");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -84,6 +89,30 @@ public class SQLQueries {
         }
         return new History(id, list);
     }
+
+    public ArrayList<Object> getUser(String login, Socket socket) {
+        ArrayList<Object> list = new ArrayList<Object>();
+        try {
+            resultSet = statement.executeQuery("SELECT * FROM users WHERE login = '" + login + "' LIMIT 1;");
+
+            if(!resultSet.next()) {
+                statement.executeUpdate("INSERT INTO 'users' " +
+                        "('login', 'socket') VALUES ('" + login + "','" + socket + "');");
+                resultSet = statement.executeQuery("SELECT * FROM users WHERE login = '" + login + "' LIMIT 1;");
+                resultSet.next();
+            }
+            list.add(resultSet.getInt("id"));
+            list.add(resultSet.getString("login"));
+            list.add(resultSet.getObject("socket"));
+            list.add(resultSet.getInt("access"));
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+       return list;
+    }
+
 
     public int getId() {
         int i = 0;
